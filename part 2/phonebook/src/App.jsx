@@ -3,6 +3,7 @@ import Filter from "./components/Filter"
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import personsService from './services/persons'
+import axios from 'axios'
 
 const App = () => {
 
@@ -27,7 +28,6 @@ const App = () => {
       const newPerson = { name: newName, number: newNumber }
       personsService.create(newPerson)
         .then(returnedPerson => {
-          console.log(returnedPerson)
           setPersons(persons.concat(returnedPerson))
           setFilteredPersons(persons.concat(returnedPerson).filter(person => person.name.toLowerCase().includes(filter)))
         })
@@ -49,8 +49,20 @@ const App = () => {
 
   const handleFilterChange = (event) => {
     setFilter(event.target.value)
-    const filtered = persons.filter(person => person.name.toLowerCase().includes(event.target.value))
+    const filtered = persons.filter(person => person.name.toLowerCase().includes(event.target.value.toLowerCase()))
     setFilteredPersons(filtered)
+  }
+
+  const handleDeletePerson = (id) => {
+    const personDelete = persons.find(p => p.id === id)
+    if (window.confirm(`Delete ${personDelete.name}?`)) {
+      personsService.deletePerson(id)
+        .then(deletedPerson => {
+          setPersons(persons.filter(p => p.id !== id))
+          setFilteredPersons(filteredPersons.filter(p => p.id !== id))
+          alert(`${deletedPerson.name} deleted`)
+        })
+    }
   }
 
   return (
@@ -65,7 +77,7 @@ const App = () => {
         newNumber={newNumber}
         handleNumberChange={handleNumberChange} />
       <h3>Numbers</h3>
-      <Persons personsToShow={filteredPersons} />
+      <Persons personsToShow={filteredPersons} handleDeletePerson={handleDeletePerson} />
     </div>
   )
 }
