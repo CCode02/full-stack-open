@@ -3,7 +3,7 @@ import Filter from "./components/Filter"
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import personsService from './services/persons'
-import axios from 'axios'
+import Notification from "./components/Notification";
 
 const App = () => {
 
@@ -20,6 +20,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
   const [filteredPersons, setFilteredPersons] = useState(persons)
+  const [notificationMessage, setNotificationMessage] = useState(null)
 
   const addNewName = (event) => {
     event.preventDefault()
@@ -30,6 +31,10 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
           setFilteredPersons(persons.concat(returnedPerson).filter(person => person.name.toLowerCase().includes(filter)))
+          setNotificationMessage(`Added ${returnedPerson.name}`)
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 5000)
         })
     } else {
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
@@ -38,7 +43,10 @@ const App = () => {
           .then(returnedPerson => {
             setPersons(persons.map(p => p.id !== changedPerson.id ? p : changedPerson))
             setFilteredPersons(filteredPersons.map(p => p.id !== changedPerson.id ? p : changedPerson))
-            alert(`${returnedPerson.name} updated`)
+            setNotificationMessage(`${returnedPerson.name} updated`)
+            setTimeout(() => {
+            setNotificationMessage(null)
+          }, 5000)
           })
       }
     }
@@ -68,7 +76,10 @@ const App = () => {
         .then(deletedPerson => {
           setPersons(persons.filter(p => p.id !== id))
           setFilteredPersons(filteredPersons.filter(p => p.id !== id))
-          alert(`${deletedPerson.name} deleted`)
+          setNotificationMessage(`${deletedPerson.name} deleted`)
+            setTimeout(() => {
+            setNotificationMessage(null)
+          }, 5000)
         })
     }
   }
@@ -76,6 +87,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} />
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
       <h3>add a new</h3>
       <PersonForm
