@@ -6,7 +6,10 @@ import personsService from './services/persons'
 import Notification from "./components/Notification";
 
 const App = () => {
-
+  const messageTypes = {
+    success: 'successMessage',
+    error: 'errorMessage'
+  }
   const [persons, setPersons] = useState([])
 
   useEffect(() => {
@@ -21,6 +24,7 @@ const App = () => {
   const [filter, setFilter] = useState('')
   const [filteredPersons, setFilteredPersons] = useState(persons)
   const [notificationMessage, setNotificationMessage] = useState(null)
+  const [messageType, setMessageType] = useState(messageTypes.success)
 
   const addNewName = (event) => {
     event.preventDefault()
@@ -31,6 +35,7 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
           setFilteredPersons(persons.concat(returnedPerson).filter(person => person.name.toLowerCase().includes(filter)))
+          setMessageType(messageTypes.success)
           setNotificationMessage(`Added ${returnedPerson.name}`)
           setTimeout(() => {
             setNotificationMessage(null)
@@ -43,10 +48,20 @@ const App = () => {
           .then(returnedPerson => {
             setPersons(persons.map(p => p.id !== changedPerson.id ? p : changedPerson))
             setFilteredPersons(filteredPersons.map(p => p.id !== changedPerson.id ? p : changedPerson))
+            setMessageType(messageTypes.success)
             setNotificationMessage(`${returnedPerson.name} updated`)
             setTimeout(() => {
-            setNotificationMessage(null)
-          }, 5000)
+              setNotificationMessage(null)
+            }, 5000)
+          })
+          .catch(error => {
+            setPersons(persons.filter(p => p.id !== changedPerson.id))
+            setFilteredPersons(filteredPersons.filter(p => p.id !== changedPerson.id))
+            setMessageType(messageTypes.error)
+            setNotificationMessage(`Information of '${changedPerson.name}' has already been removed from server`)
+            setTimeout(() => {
+              setNotificationMessage(null)
+            }, 5000)
           })
       }
     }
@@ -76,8 +91,9 @@ const App = () => {
         .then(deletedPerson => {
           setPersons(persons.filter(p => p.id !== id))
           setFilteredPersons(filteredPersons.filter(p => p.id !== id))
+          setMessageType(messageTypes.success)
           setNotificationMessage(`${deletedPerson.name} deleted`)
-            setTimeout(() => {
+          setTimeout(() => {
             setNotificationMessage(null)
           }, 5000)
         })
@@ -87,7 +103,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notificationMessage} />
+      <Notification message={notificationMessage} messageType={messageType}/>
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
       <h3>add a new</h3>
       <PersonForm
