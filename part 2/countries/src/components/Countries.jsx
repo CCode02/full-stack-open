@@ -3,8 +3,6 @@ import Country from "./Country";
 const Countries = ({ countries, handleShowContry }) => {
     const numCountries = countries.length
 
-    
-
     if (numCountries > 10) {
         return <div>Too many matches, specify another filter</div>
     }

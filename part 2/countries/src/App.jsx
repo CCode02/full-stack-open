@@ -25,7 +25,6 @@ const App = () => {
     <>
       <div>find countries <input onChange={handleCountryNameChange} value={countryName} /></div>
       <Countries countries={countriesToShow} handleShowContry={handleShowContry} />
-
     </>
   )
 }
