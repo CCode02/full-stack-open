@@ -17,10 +17,14 @@ const App = () => {
     setCountriesToShow(countries.filter(c => c.name.common.toLowerCase().includes(event.target.value.toLowerCase())))
   }
 
+  const handleShowContry = (officialName) => {
+    setCountriesToShow(countries.filter(c => c.name.official === officialName))
+  }
+
   return (
     <>
       <div>find countries <input onChange={handleCountryNameChange} value={countryName} /></div>
-      <Countries countries={countriesToShow} />
+      <Countries countries={countriesToShow} handleShowContry={handleShowContry} />
 
     </>
   )
