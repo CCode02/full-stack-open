@@ -46,11 +46,28 @@ app.get('/info', (request, response) => {
         <p>${now}</p>`)
 })
 
+app.post('/api/persons', (request, response) => {
+    const body = request.body
+    
+    if(!body.name || !body.number){
+        return response.status(400).json({
+            error: 'property missing'
+        })
+    }
+    
+    const newPerson = {id: generateId(), ...body}
+    persons = persons.concat(newPerson)
+    
+    response.status(201).json(newPerson)
+})
+
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
     persons = persons.filter(p => p.id !== id)
     response.status(204).end()
 })
+
+const generateId = () => Math.floor(Math.random() * 1000)
 
 const PORT = 3001
 app.listen(PORT)
