@@ -41,7 +41,7 @@ app.get('/api/persons/:id', (request, response) => {
     const person = persons.find(p => p.id === id)
     if (person) {
         response.json(person)
-    }else{
+    } else {
         response.status(404).end()
     }
 })
@@ -54,8 +54,8 @@ app.get('/info', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
-    
-    if(!body.name || !body.number){
+
+    if (!body.name || !body.number) {
         return response.status(400).json({
             error: 'property missing'
         })
@@ -66,10 +66,10 @@ app.post('/api/persons', (request, response) => {
             error: 'name must be unique'
         })
     }
-    
-    const newPerson = {id: generateId(), ...body}
+
+    const newPerson = { id: generateId(), ...body }
     persons = persons.concat(newPerson)
-    
+
     response.status(201).json(newPerson)
 })
 
@@ -81,6 +81,7 @@ app.delete('/api/persons/:id', (request, response) => {
 
 const generateId = () => Math.floor(Math.random() * 1000)
 
-const PORT = 3001
-app.listen(PORT)
-console.log(`Server running on port ${PORT}`)
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
+})
