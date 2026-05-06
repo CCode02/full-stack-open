@@ -26,4 +26,10 @@ test('all blogs are returned as json', async () => {
     assert.strictEqual(response.body.length, helper.initialBlogs.length)
 })
 
+test.only('property id exist', async () => {
+    const response = await api.get('/api/blogs')
+
+    assert(response.body[0].id)
+})
+
 after(async () => await mongoose.connection.close())
