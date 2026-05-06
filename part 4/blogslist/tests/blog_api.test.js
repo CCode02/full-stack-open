@@ -71,4 +71,31 @@ test('a blog without property likes is created with zero likes', async () => {
     assert.strictEqual(blogCreated.likes, 0)
 })
 
+test('a blog without title or url is not added', async () => {
+    const blogWithoutTittle = {
+        author: "CCode02",
+        url: "https://github.com/CCode02",
+        likes: 1
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(blogWithoutTittle)
+        .expect(400)
+
+    const blogWithoutUrl = {
+        title: "Fictional blog",
+        author: "CCode02",
+        likes: 1
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(blogWithoutUrl)
+        .expect(400)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+})
+
 after(async () => await mongoose.connection.close())
