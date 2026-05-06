@@ -53,4 +53,22 @@ test('a blog can be added', async () => {
     assert(titles.includes('Fictional blog'))
 })
 
+test('a blog without property likes is created with zero likes', async () => {
+    const newBlog = {
+        title: "Fictional blog",
+        author: "CCode02",
+        url: "https://github.com/CCode02",
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    const blogCreated = blogsAtEnd.find(blog => blog.title === 'Fictional blog')
+    assert.strictEqual(blogCreated.likes, 0)
+})
+
 after(async () => await mongoose.connection.close())
