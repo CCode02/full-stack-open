@@ -113,4 +113,17 @@ test('deletion of a blog', async () => {
     assert(!titles.includes(deletedBlog.title))
 })
 
+test('update a blog', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const updatedBlog = {...blogsAtStart[0], likes: blogsAtStart[0].likes + 1}
+
+    await api
+    .put(`/api/blogs/${updatedBlog.id}`)
+    .send(updatedBlog)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    assert.strictEqual(updatedBlog.likes, blogsAtEnd[0].likes)
+    assert.deepStrictEqual(updatedBlog, blogsAtEnd[0])
+})
+
 after(async () => await mongoose.connection.close())
