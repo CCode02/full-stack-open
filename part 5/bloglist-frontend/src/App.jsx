@@ -8,6 +8,9 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -39,10 +42,27 @@ const App = () => {
     }
   }
 
-  const handleLogout = (event) => {
+  const handleLogout = () => {
     window.localStorage.removeItem('loggedUser')
     setUser(null)
     blogService.clearToken()
+  }
+
+  const handleCreateBlog = () => {
+    const blog = {
+      title,
+      author,
+      url
+    }
+    try {
+      blogService.createBlog(blog)
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+    } catch (error) {
+      console.log(error.message)
+    }
+
   }
 
   const loginForm = () => (
@@ -54,6 +74,7 @@ const App = () => {
             username
             <input
               type="text"
+              value={username}
               onChange={({ target }) => setUsername(target.value)} />
           </label>
         </div>
@@ -62,6 +83,7 @@ const App = () => {
             password
             <input
               type="password"
+              value={password}
               onChange={({ target }) => setPassword(target.value)} />
           </label>
         </div>
@@ -79,6 +101,35 @@ const App = () => {
           logout
         </button>
       </p>
+      <h2>create new</h2>
+      <div>
+        <label>
+          title:
+          <input 
+          type="text"
+          value={title} 
+          onChange={({ target }) => setTitle(target.value)} />
+        </label>
+      </div>
+      <div>
+        <label>
+          author:
+          <input 
+          type="text"
+          value={author} 
+          onChange={({ target }) => setAuthor(target.value)} />
+        </label>
+      </div>
+      <div>
+        <label>
+          url:
+          <input 
+          type="text"
+          value={url} 
+          onChange={({ target }) => setUrl(target.value)} />
+        </label>
+      </div>
+      <button onClick={handleCreateBlog}>create</button>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
