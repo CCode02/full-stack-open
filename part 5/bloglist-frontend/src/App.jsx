@@ -52,14 +52,14 @@ const App = () => {
     showNotification(`Successful logout`, false)
   }
 
-  const handleCreateBlog = () => {
+  const handleCreateBlog = async () => {
     const blog = {
       title,
       author,
       url
     }
     try {
-      const createdBlog = blogService.createBlog(blog)
+      const createdBlog = await blogService.createBlog(blog)
       setTitle('')
       setAuthor('')
       setUrl('')
