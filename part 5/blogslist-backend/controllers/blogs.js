@@ -32,8 +32,8 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) =
   const blog = await Blog.findById(request.params.id)
   const user = request.user
 
-  if(blog.user.toString() !== user._id.toString()){
-    return response.status(401).json({error: 'The user does not have permission to delete this note'})
+  if (blog.user.toString() !== user._id.toString()) {
+    return response.status(401).json({ error: 'The user does not have permission to delete this note' })
   }
 
   user.blogs = user.blogs.filter(id => id.toString() !== blog.id.toString())
@@ -45,7 +45,8 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) =
 
 blogsRouter.put('/:id', async (request, response) => {
   const updatedBlog = request.body
-  const result = await Blog.findByIdAndUpdate(request.params.id, updatedBlog)
+  const result = await Blog.findByIdAndUpdate(request.params.id, updatedBlog, { returnDocument: 'after' })
+    .populate('user', { username: 1, name: 1 })
   response.status(200).json(result)
 })
 

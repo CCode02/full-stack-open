@@ -60,6 +60,16 @@ const App = () => {
     }
   }
 
+  const addLike = async (likedBlog) => {
+    try {
+      const returnedBlog = await blogService.updateBlog(likedBlog.id, likedBlog)
+      const prueba = blogs.map(blog => blog.id === returnedBlog.id ? returnedBlog : blog)
+      setBlogs(blogs.map(blog => blog.id === returnedBlog.id ? returnedBlog : blog))
+    } catch (error) {
+      showNotification(error.message, true)
+    }
+  }
+
   const showNotification = (message, error) => {
     const notification = error ? { error: message } : { message }
     setNotification(notification)
@@ -89,7 +99,7 @@ const App = () => {
       <Togglable buttonLabel='create new blog' ref={blogsFormRef}>
         <BlogsForm createBlog={addBlog} />
       </Togglable>
-      <BlogList blogs={blogs} />
+      <BlogList blogs={blogs} likeBlog={addLike} />
     </>
   )
 
