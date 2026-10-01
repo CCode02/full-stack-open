@@ -75,6 +75,16 @@ const App = () => {
     }
   }
 
+  const deleteBlog = async (deletedBlog) => {
+    try {
+      await blogService.deleteBlog(deletedBlog.id)
+      setBlogs(blogs.filter(blog => blog.id !== deletedBlog.id))
+      showNotification(`blog ${deletedBlog.title} by ${deletedBlog.author} deleted`, false)
+    } catch (error) {
+      showNotification(error.message, true)
+    }
+  }
+
   const showNotification = (message, error) => {
     const notification = error ? { error: message } : { message }
     setNotification(notification)
@@ -104,7 +114,7 @@ const App = () => {
       <Togglable buttonLabel='create new blog' ref={blogsFormRef}>
         <BlogsForm createBlog={addBlog} />
       </Togglable>
-      <BlogList blogs={blogs} likeBlog={addLike} />
+      <BlogList blogs={blogs} likeBlog={addLike} deleteBlog={deleteBlog} />
     </>
   )
 
