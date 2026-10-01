@@ -6,6 +6,7 @@ import Togglable from './components/Togglable'
 import BlogsForm from './components/BlogsForm'
 import BlogList from './components/BlogList'
 import Login from './components/Login'
+import compareFunctions from './utils/compareFunctions'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -24,9 +25,10 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
+    blogService.getAll().then(blogs => {
+      blogs.sort(compareFunctions.blogsLikesAsc)
       setBlogs(blogs)
-    )
+    })
   }, [])
 
   const login = async (credentials) => {
@@ -64,7 +66,10 @@ const App = () => {
     try {
       const returnedBlog = await blogService.updateBlog(likedBlog.id, likedBlog)
       const prueba = blogs.map(blog => blog.id === returnedBlog.id ? returnedBlog : blog)
-      setBlogs(blogs.map(blog => blog.id === returnedBlog.id ? returnedBlog : blog))
+
+      const blogsTemp = blogs.map(blog => blog.id === returnedBlog.id ? returnedBlog : blog)
+      blogsTemp.sort(compareFunctions.blogsLikesAsc)
+      setBlogs(blogsTemp)
     } catch (error) {
       showNotification(error.message, true)
     }
