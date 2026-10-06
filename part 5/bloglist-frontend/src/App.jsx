@@ -38,8 +38,8 @@ const App = () => {
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
-      showNotification(`Successful login`, false)
-    } catch (error) {
+      showNotification('Successful login', false)
+    } catch {
       showNotification('wrong username or password', true)
     }
   }
@@ -48,7 +48,7 @@ const App = () => {
     window.localStorage.removeItem('loggedUser')
     setUser(null)
     blogService.clearToken()
-    showNotification(`Successful logout`, false)
+    showNotification('Successful logout', false)
   }
 
   const addBlog = async (blog) => {
@@ -65,10 +65,10 @@ const App = () => {
   const addLike = async (likedBlog) => {
     try {
       const returnedBlog = await blogService.updateBlog(likedBlog.id, likedBlog)
-      const prueba = blogs.map(blog => blog.id === returnedBlog.id ? returnedBlog : blog)
 
       const blogsTemp = blogs.map(blog => blog.id === returnedBlog.id ? returnedBlog : blog)
       blogsTemp.sort(compareFunctions.blogsLikesDesc)
+
       setBlogs(blogsTemp)
     } catch (error) {
       showNotification(error.message, true)
