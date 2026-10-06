@@ -26,7 +26,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs => {
-      blogs.sort(compareFunctions.blogsLikesAsc)
+      blogs.sort(compareFunctions.blogsLikesDesc)
       setBlogs(blogs)
     })
   }, [])
@@ -68,7 +68,7 @@ const App = () => {
       const prueba = blogs.map(blog => blog.id === returnedBlog.id ? returnedBlog : blog)
 
       const blogsTemp = blogs.map(blog => blog.id === returnedBlog.id ? returnedBlog : blog)
-      blogsTemp.sort(compareFunctions.blogsLikesAsc)
+      blogsTemp.sort(compareFunctions.blogsLikesDesc)
       setBlogs(blogsTemp)
     } catch (error) {
       showNotification(error.message, true)
